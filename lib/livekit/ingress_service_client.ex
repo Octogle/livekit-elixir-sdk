@@ -102,7 +102,7 @@ defmodule Livekit.IngressServiceClient do
         Logger.info("Created ingress: #{ingress_info.ingress_id}")
         {:ok, ingress_info}
 
-      {:error, %GRPC.RPCError{} = error} ->
+      {:error, %{__struct__: _} = error} ->
         Logger.error("Failed to create ingress: #{error.message}")
         {:error, error.message}
 
@@ -133,7 +133,7 @@ defmodule Livekit.IngressServiceClient do
         Logger.info("Updated ingress: #{ingress_info.ingress_id}")
         {:ok, ingress_info}
 
-      {:error, %GRPC.RPCError{} = error} ->
+      {:error, %{__struct__: _} = error} ->
         Logger.error("Failed to update ingress: #{error.message}")
         {:error, error.message}
 
@@ -171,7 +171,7 @@ defmodule Livekit.IngressServiceClient do
         Logger.info("Listed #{length(response.items)} ingress endpoints")
         {:ok, response}
 
-      {:error, %GRPC.RPCError{} = error} ->
+      {:error, %{__struct__: _} = error} ->
         Logger.error("Failed to list ingress: #{error.message}")
         {:error, error.message}
 
@@ -205,7 +205,7 @@ defmodule Livekit.IngressServiceClient do
         Logger.info("Deleted ingress: #{ingress_info.ingress_id}")
         {:ok, ingress_info}
 
-      {:error, %GRPC.RPCError{} = error} ->
+      {:error, %{__struct__: _} = error} ->
         Logger.error("Failed to delete ingress: #{error.message}")
         {:error, error.message}
 
@@ -215,5 +215,6 @@ defmodule Livekit.IngressServiceClient do
     end
   end
 end
+
 
 end

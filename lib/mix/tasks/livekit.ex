@@ -361,7 +361,7 @@ defmodule Mix.Tasks.Livekit do
             Logger.info("Successfully started room recording, response: #{inspect(response)}")
             {:ok, response}
 
-          {:error, %GRPC.RPCError{} = error} ->
+          {:error, %{__struct__: _} = error} ->
             Logger.error(
               "Failed to start room recording because of GRPC error: #{inspect(error)}"
             )
@@ -938,5 +938,6 @@ defmodule Mix.Tasks.Livekit do
     IO.puts(@moduledoc)
   end
 end
+
 
 end
