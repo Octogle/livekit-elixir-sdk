@@ -37,20 +37,20 @@ defmodule Livekit.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :crypto, :gun, :grpc]
+      extra_applications: [:logger, :crypto]
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:protobuf, "~> 0.14.0"},
+      {:protobuf, "~> 0.15.0"},
       {:tesla, "~> 1.7"},
       {:hackney, "~> 1.18"},
       {:jason, "~> 1.4"},
       {:joken, "~> 2.6"},
       {:inflex, "~> 2.1"},
-      {:grpc, "~> 0.10.2"},
+      {:grpc, "~> 0.10.2", optional: true},
       # Development dependencies
       {:ex_doc, "~> 0.29", only: :dev, runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
