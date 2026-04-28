@@ -242,6 +242,7 @@ defmodule Livekit.DeleteIngressRequest do
   field(:ingress_id, 1, type: :string, json_name: "ingressId")
 end
 
+if Code.ensure_loaded?(GRPC.Service) do
 defmodule Livekit.Ingress.Service do
   @moduledoc false
 
@@ -255,9 +256,12 @@ defmodule Livekit.Ingress.Service do
 
   rpc(:DeleteIngress, Livekit.DeleteIngressRequest, Livekit.IngressInfo)
 end
+end
 
+if Code.ensure_loaded?(GRPC.Service) do
 defmodule Livekit.Ingress.Stub do
   @moduledoc false
 
   use GRPC.Stub, service: Livekit.Ingress.Service
+end
 end

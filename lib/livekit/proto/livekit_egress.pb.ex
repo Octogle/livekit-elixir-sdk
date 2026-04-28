@@ -326,6 +326,7 @@ defmodule Livekit.AutoTrackEgress do
   field(:preset, 1, type: :string)
 end
 
+if Code.ensure_loaded?(GRPC.Service) do
 defmodule Livekit.Egress.Service do
   @moduledoc false
 
@@ -349,9 +350,12 @@ defmodule Livekit.Egress.Service do
 
   rpc(:StopEgress, Livekit.StopEgressRequest, Livekit.EgressInfo)
 end
+end
 
+if Code.ensure_loaded?(GRPC.Service) do
 defmodule Livekit.Egress.Stub do
   @moduledoc false
 
   use GRPC.Stub, service: Livekit.Egress.Service
+end
 end

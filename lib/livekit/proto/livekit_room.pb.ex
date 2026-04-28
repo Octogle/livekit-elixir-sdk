@@ -203,6 +203,7 @@ defmodule Livekit.SendDataResponse do
   use Protobuf, protoc_gen_elixir_version: "0.15.0", syntax: :proto3
 end
 
+if Code.ensure_loaded?(GRPC.Service) do
 defmodule Livekit.RoomService.Service do
   @moduledoc false
 
@@ -234,9 +235,12 @@ defmodule Livekit.RoomService.Service do
 
   rpc(:SendData, Livekit.SendDataRequest, Livekit.SendDataResponse)
 end
+end
 
+if Code.ensure_loaded?(GRPC.Service) do
 defmodule Livekit.RoomService.Stub do
   @moduledoc false
 
   use GRPC.Stub, service: Livekit.RoomService.Service
+end
 end
