@@ -1,3 +1,4 @@
+if Code.ensure_loaded?(GRPC.Stub) do
 defmodule Livekit.EgressServiceClient do
   @moduledoc """
   Client for interacting with the Livekit Egress service.
@@ -61,4 +62,6 @@ defmodule Livekit.EgressServiceClient do
   def stop_egress({channel, metadata}, request) do
     Egress.Stub.stop_egress(channel, request, metadata)
   end
+end
+
 end

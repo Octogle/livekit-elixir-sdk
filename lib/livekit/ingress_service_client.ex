@@ -1,3 +1,4 @@
+if Code.ensure_loaded?(GRPC.Stub) do
 defmodule Livekit.IngressServiceClient do
   @moduledoc """
   Client for interacting with the LiveKit Ingress service.
@@ -213,4 +214,6 @@ defmodule Livekit.IngressServiceClient do
         {:error, reason}
     end
   end
+end
+
 end

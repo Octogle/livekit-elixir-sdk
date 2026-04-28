@@ -1,3 +1,4 @@
+if Code.ensure_loaded?(GRPC.Stub) do
 defmodule Mix.Tasks.Livekit do
   use Mix.Task
   require Logger
@@ -936,4 +937,6 @@ defmodule Mix.Tasks.Livekit do
   defp print_help do
     IO.puts(@moduledoc)
   end
+end
+
 end
