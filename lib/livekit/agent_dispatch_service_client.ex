@@ -21,7 +21,10 @@ defmodule Livekit.AgentDispatchServiceClient do
 
   require Logger
 
-  defstruct [:base_url, :api_key, :api_secret, :client]
+  defstruct [:base_url, :api_key, :api_secret, :client, :ttl]
+
+  @default_recv_timeout 30_000
+  @default_ttl 600
 
   @doc """
   Creates a new AgentDispatchServiceClient instance.
@@ -29,12 +32,23 @@ defmodule Livekit.AgentDispatchServiceClient do
   `base_url` may be passed with the `ws://` / `wss://` scheme used by the
   LiveKit websocket endpoint — it is normalised to `http://` / `https://`
   for the Twirp REST hop.
+
+  ## Options
+
+  - `:recv_timeout` — Tesla/Hackney receive timeout in milliseconds.
+    Defaults to `#{@default_recv_timeout}`. Lower this when the call is
+    blocking a latency-sensitive caller (e.g. a Phoenix channel join).
+  - `:ttl` — JWT TTL in seconds. Defaults to `#{@default_ttl}`. Lower this
+    for short-lived service tokens minted per-call.
   """
-  def new(base_url, api_key, api_secret) do
+  def new(base_url, api_key, api_secret, opts \\ []) do
     base_url =
       base_url
       |> String.replace(~r{^ws://}, "http://")
       |> String.replace(~r{^wss://}, "https://")
+
+    recv_timeout = Keyword.get(opts, :recv_timeout, @default_recv_timeout)
+    ttl = Keyword.get(opts, :ttl, @default_ttl)
 
     middleware = [
       {Tesla.Middleware.BaseUrl, base_url},
@@ -53,13 +67,14 @@ defmodule Livekit.AgentDispatchServiceClient do
        ]}
     ]
 
-    client = Tesla.client(middleware, {Tesla.Adapter.Hackney, [recv_timeout: 30_000]})
+    client = Tesla.client(middleware, {Tesla.Adapter.Hackney, [recv_timeout: recv_timeout]})
 
     %__MODULE__{
       base_url: base_url,
       api_key: api_key,
       api_secret: api_secret,
-      client: client
+      client: client,
+      ttl: ttl
     }
   end
 
@@ -153,7 +168,7 @@ defmodule Livekit.AgentDispatchServiceClient do
     token =
       AccessToken.new(client.api_key, client.api_secret)
       |> AccessToken.with_identity("service")
-      |> AccessToken.with_ttl(600)
+      |> AccessToken.with_ttl(client.ttl)
       |> AccessToken.add_grant(video_grant)
       |> AccessToken.to_jwt()
 
