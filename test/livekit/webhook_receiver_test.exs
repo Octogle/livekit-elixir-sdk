@@ -13,7 +13,7 @@ defmodule Livekit.WebhookReceiverTest do
         ~s({"event":"room_started","room":{"name":"test-room","sid":"RM_test123"},"id":"123","createdAt":1613443597})
 
       # Calculate SHA256 hash of the body
-      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode16(case: :lower)
+      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode64()
 
       # Create a mock token with the SHA256 hash
       token = "mock_token"
@@ -78,9 +78,13 @@ defmodule Livekit.WebhookReceiverTest do
         api_secret: "test_secret"
       })
 
-      # Mock the token verification with incorrect SHA256
+      # Mock the token verification with incorrect SHA256.
+      # Must be valid base64 (32 bytes when decoded) so we exercise the
+      # mismatch branch rather than the "not valid base64" branch.
+      wrong_b64 = :crypto.strong_rand_bytes(32) |> Base.encode64()
+
       with_mock AccessToken,
-        verify: fn ^token, "test_key", "test_secret" -> {:ok, %{"sha256" => "wrong_hash"}} end do
+        verify: fn ^token, "test_key", "test_secret" -> {:ok, %{"sha256" => wrong_b64}} end do
         # Test
         result = WebhookReceiver.receive(webhook_body, token)
 
@@ -124,7 +128,7 @@ defmodule Livekit.WebhookReceiverTest do
       })
 
       # Mock the token verification
-      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode16(case: :lower)
+      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode64()
 
       with_mock AccessToken,
         verify: fn ^token, "test_key", "test_secret" -> {:ok, %{"sha256" => sha256}} end do
@@ -159,7 +163,7 @@ defmodule Livekit.WebhookReceiverTest do
         ~s({"event":"room_started","room":{"name":"test-room","sid":"RM_test123"},"id":"123","createdAt":1613443597})
 
       # Calculate SHA256 hash of the body
-      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode16(case: :lower)
+      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode64()
 
       # Create a mock token with the SHA256 hash
       token = "mock_token"
