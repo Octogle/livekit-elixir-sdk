@@ -214,19 +214,27 @@ defmodule Livekit.WebhookReceiver do
     end
   end
 
-  # Validates the SHA256 hash of the request body
+  # Validates the SHA256 hash of the request body.
+  #
+  # LiveKit signs the body hash as standard Base64 — matching every other
+  # LiveKit SDK (Go, Python, Node). Earlier versions of this Elixir SDK
+  # compared a hex-encoded digest and silently rejected every real webhook
+  # with `"SHA256 hash mismatch"` (the JWT signature verified fine, but
+  # `Base.encode16(case: :lower)` of the body never matched the base64
+  # claim from LiveKit). Compare raw bytes after base64-decoding the claim
+  # so we don't take a position on what encoding the server uses.
   defp validate_sha(claims, body) do
     case Map.get(claims, "sha256") do
       nil ->
         {:error, "Missing SHA256 hash in token"}
 
       sha ->
-        computed_sha = :crypto.hash(:sha256, body) |> Base.encode16(case: :lower)
+        computed = :crypto.hash(:sha256, body)
 
-        if sha == computed_sha do
-          :ok
-        else
-          {:error, "SHA256 hash mismatch"}
+        case Base.decode64(sha) do
+          {:ok, expected} when computed == expected -> :ok
+          {:ok, _other} -> {:error, "SHA256 hash mismatch"}
+          :error -> {:error, "SHA256 claim is not valid base64"}
         end
     end
   end

@@ -78,7 +78,7 @@ defmodule Livekit.WebhookIntegrationTest do
       token = "mock_token"
 
       # Calculate SHA256 hash of the body
-      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode16(case: :lower)
+      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode64()
 
       # Mock the application config
       Application.put_env(:livekit, :webhook, %{
@@ -119,7 +119,7 @@ defmodule Livekit.WebhookIntegrationTest do
       token = "mock_token"
 
       # Calculate SHA256 hash of the body
-      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode16(case: :lower)
+      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode64()
 
       # Mock the application config
       Application.put_env(:livekit, :webhook, %{
@@ -168,7 +168,7 @@ defmodule Livekit.WebhookIntegrationTest do
       token = "mock_token"
 
       # Calculate SHA256 hash of the body
-      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode16(case: :lower)
+      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode64()
 
       # Mock the application config
       Application.put_env(:livekit, :webhook, %{
@@ -199,7 +199,7 @@ defmodule Livekit.WebhookIntegrationTest do
       })
 
       # Calculate SHA256 hash of the body
-      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode16(case: :lower)
+      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode64()
 
       # Mock the token verification
       with_mock AccessToken,
@@ -304,7 +304,7 @@ defmodule Livekit.WebhookIntegrationTest do
       # Process each event in sequence
       Enum.each(webhook_events, fn %{body: webhook_body, token: token} ->
         # Calculate SHA256 hash of the body
-        sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode16(case: :lower)
+        sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode64()
 
         # Mock the token verification
         with_mock AccessToken,
@@ -351,7 +351,7 @@ defmodule Livekit.WebhookIntegrationTest do
       token = "mock_token"
 
       # Calculate SHA256 hash of the body
-      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode16(case: :lower)
+      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode64()
 
       # Mock the application config
       Application.put_env(:livekit, :webhook, %{
@@ -399,7 +399,7 @@ defmodule Livekit.WebhookIntegrationTest do
       token = "mock_token"
 
       # Calculate SHA256 hash of the body
-      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode16(case: :lower)
+      sha256 = :crypto.hash(:sha256, webhook_body) |> Base.encode64()
 
       # Mock the application config
       Application.put_env(:livekit, :webhook, %{
